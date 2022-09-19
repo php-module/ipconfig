@@ -1,0 +1,3 @@
+vendor
+composer.lock
+src/data/ipconfig_output.txt
