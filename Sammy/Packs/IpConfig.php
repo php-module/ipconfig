@@ -96,6 +96,8 @@ namespace Sammy\Packs {
 
       fclose ($outputFileHandle);
 
+      @unlink ($this->outputFilePath);
+
       return ($ipConfigAddresses);
     }
   }}

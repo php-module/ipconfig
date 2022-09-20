@@ -75,8 +75,8 @@ namespace Sammy\Packs\IpConfig {
      * @method void output file path setter
      */
     public function setOutputFilePath ($outputFilePath) {
-      if (is_string ($outputFilePath) && !empty ($outputFilePath) && is_file ($outputFilePath)) {
-        $this->outputFilePath = realpath ($outputFilePath);
+      if (is_string ($outputFilePath) && !empty ($outputFilePath)) {
+        $this->outputFilePath = $outputFilePath;
       }
     }
 
