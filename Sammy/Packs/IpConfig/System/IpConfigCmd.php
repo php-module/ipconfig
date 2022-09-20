@@ -61,9 +61,30 @@ namespace Sammy\Packs\IpConfig\System {
      * @method void
      */
     private function executeSystemIpConfig () {
-      $cmd = join (' ', ['ipconfig', '>', "\"{$this->outputFilePath}\""]);
+      $outputFilePath = self::createOutPutFileDir ($this->outputFilePath);
+
+      $cmd = join (' ', ['ipconfig', '>', "\"{$outputFilePath}\""]);
 
       call_user_func_array ('system', [$cmd]);
+    }
+
+    /**
+     * @method string createOutPutFileDir
+     */
+    private static function createOutPutFileDir (string $outputFilePath) {
+      $outputFilePathSlices = preg_split ('/[\\\\\/]+/', dirname ($outputFilePath));
+
+      $outputFilePathSlicesCount = count ($outputFilePathSlices);
+
+      for ($i = 0; $i < $outputFilePathSlicesCount; $i++) {
+        $currentPath = join (DIRECTORY_SEPARATOR, array_slice ($outputFilePathSlices, 0, $i + 1));
+
+        if (!file_exists ($currentPath) && $currentPath) {
+          mkdir ($currentPath);
+        }
+      }
+
+      return $outputFilePath;
     }
   }}
 }
