@@ -42,11 +42,21 @@ namespace Sammy\Packs\IpConfig {
    * -
    */
 
-  $ipConfigOutputFilePath = join ('/', [
-    __DIR__, 'data', 'ipconfig_output.txt'
+  $rootDir = join (DIRECTORY_SEPARATOR, [
+    realpath (null), 'storage', 'temp'
   ]);
 
-  $IpConfig = new IpConfig (realpath ($ipConfigOutputFilePath));
+  if (function_exists ('requires')) {
+    $path = requires ('path');
+
+    $rootDir = $path->join ('~', 'storage', 'temp');
+  }
+
+  $ipConfigOutputFilePath = join (DIRECTORY_SEPARATOR, [
+    $rootDir, 'ipconfig_output.txt'
+  ]);
+
+  $IpConfig = new IpConfig ($ipConfigOutputFilePath);
   /**
    * @class XSami
    * Base internal class for the
