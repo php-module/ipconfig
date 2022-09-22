@@ -31,6 +31,7 @@
  * SOFTWARE.
  */
 namespace Sammy\Packs\IpConfig {
+  use Sammy\Packs\Path;
   use Sammy\Packs\IpConfig;
   /**
    * PHP MODULE ENTRY POINT.
@@ -42,15 +43,9 @@ namespace Sammy\Packs\IpConfig {
    * -
    */
 
-  $rootDir = join (DIRECTORY_SEPARATOR, [
-    realpath (null), 'storage', 'temp'
-  ]);
+  $path = new Path;
 
-  if (function_exists ('requires')) {
-    $path = requires ('path');
-
-    $rootDir = $path->join ('~', 'storage', 'temp');
-  }
+  $rootDir = $path->join ('~', 'storage', 'temp');
 
   $ipConfigOutputFilePath = join (DIRECTORY_SEPARATOR, [
     $rootDir, 'ipconfig_output.txt'
