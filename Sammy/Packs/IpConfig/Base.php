@@ -93,5 +93,24 @@ namespace Sammy\Packs\IpConfig {
     private function rewriteIpConfigkeyName ($key) {
       return lcfirst (preg_replace ('/(\s+|\.+)/', '', $key));
     }
+
+    /**
+     * @method string getOperatingSystemName
+     */
+    private function getOperatingSystemName () {
+      $os = php_uname ();
+
+      $osNamePatternMap = [
+        '/windows/i' => 'windows',
+        '/linux/i' => 'linux',
+        '/mac/i' => 'mac'
+      ];
+
+      foreach ($osNamePatternMap as $re => $osName) {
+        if (preg_match ($re, $os)) {
+          return $osName;
+        }
+      }
+    }
   }}
 }

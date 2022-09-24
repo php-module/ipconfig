@@ -60,12 +60,25 @@ namespace Sammy\Packs\IpConfig\System {
     /**
      * @method void
      */
-    private function executeSystemIpConfig () {
+    private function executeSystemIpConfig ($operatingSystem = null) {
       $outputFilePath = self::createOutPutFileDir ($this->outputFilePath);
 
-      $cmd = join (' ', ['ipconfig', '>', "\"{$outputFilePath}\""]);
+      $ipconfigCmdMapByOS = [
+        'windows' => join (' ', ['ipconfig', '>', "\"{$outputFilePath}\""]),
+        'linux' => join (' ', ['ip all', '&>', "\"{$outputFilePath}\""]),
+        'mac' => join (' ', ['ip all', '>', "\"{$outputFilePath}\""]),
+      ];
 
-      call_user_func_array ('system', [$cmd]);
+      $ipconfigCmdMapByOSKeys = array_keys ($ipconfigCmdMapByOS);
+
+      if (is_numeric ($operatingSystem)
+        && (int)($operatingSystem) < count ($ipconfigCmdMapByOSKeys)) {
+        $operatingSystem = $ipconfigCmdMapByOSKeys [(int)$operatingSystem];
+      }
+
+      if (isset ($ipconfigCmdMapByOS [$operatingSystem])) {
+        call_user_func_array ('system', [$ipconfigCmdMapByOS [$operatingSystem]]);
+      }
     }
 
     /**

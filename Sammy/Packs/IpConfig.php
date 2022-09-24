@@ -59,44 +59,29 @@ namespace Sammy\Packs {
   class IpConfig {
     use IpConfig\Base;
     use IpConfig\System\IpConfigCmd;
+    use IpConfig\System\IpConfigMac;
+    use IpConfig\System\IpConfigLinux;
+    use IpConfig\System\IpConfigWindows;
 
     /**
      * @method array
      */
     public function getIpConfig (string $key = null) {
-      $this->executeSystemIpConfig ();
+      $operatingSystemName = $this->getOperatingSystemName ();
 
-      $outputFileHandle = fopen ($this->outputFilePath, 'r');
+      $ipConfigAddressesGetterMethodName = join ('', [
+        'get', ucfirst ($operatingSystemName), 'IpConfigAddresses'
+      ]);
 
       $ipConfigAddresses = [];
 
-      while (!feof ($outputFileHandle)) {
-        $outputFileLine = fgets ($outputFileHandle);
-
-        if (empty (trim ($outputFileLine))
-          || !preg_match ('/^(\t|\s)+/', $outputFileLine)) {
-          continue;
-        }
-
-        $outputFileLineKeyValuePair = preg_split ('/\s*\:\s*/', trim ($outputFileLine));
-
-        $key = $this->rewriteIpConfigkeyName ($outputFileLineKeyValuePair [0]);
-        $value = trim (join (':', array_slice ($outputFileLineKeyValuePair, 1, count ($outputFileLineKeyValuePair))));
-
-        if (isset ($ipConfigAddresses [$key])) {
-          if (!is_array ($ipConfigAddresses [$key])) {
-            $ipConfigAddresses [$key] = [$ipConfigAddresses [$key]];
-          }
-
-          array_push ($ipConfigAddresses [$key], $value);
-        } else {
-          $ipConfigAddresses [$key] = [$value];
-        }
+      if (method_exists ($this, $ipConfigAddressesGetterMethodName)) {
+        $ipConfigAddresses = call_user_func ([$this, $ipConfigAddressesGetterMethodName]);
       }
 
-      fclose ($outputFileHandle);
-
-      @unlink ($this->outputFilePath);
+      if (is_file ($this->outputFilePath)) {
+        @unlink ($this->outputFilePath);
+      }
 
       return ($ipConfigAddresses);
     }
