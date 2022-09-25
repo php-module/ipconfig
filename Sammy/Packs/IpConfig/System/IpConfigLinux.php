@@ -74,7 +74,11 @@ namespace Sammy\Packs\IpConfig\System {
      * @method array getLinuxIpConfigAddresses
      */
     protected function getLinuxIpConfigAddresses () {
-      $this->executeSystemIpConfig ('linuxsd');
+      $this->executeSystemIpConfig ('linux');
+
+      if (!is_file ($this->outputFilePath)) {
+        return [];
+      }
 
       $outputFileHandle = @fopen ($this->outputFilePath, 'r');
 
